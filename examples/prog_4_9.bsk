@@ -1,0 +1,44 @@
+# example 4.8 - x1, x2, x3 är lagrade i 100,102,104.
+#               y1, y2, y3 är lagrade i 110,112,114
+# bilda x1y1 + x2y2 + x3y3 och lagre i 120. Koden antages börja med kr=200
+
+200 10068	# x1 till MR
+201 11063       # x1y1 till AR
+202 12031       # x1y1 även till 120
+203 10268       # x2 till MR
+204 11263       # x2y2 till AR
+205 12030       # x1y1 + x2y2 till AR
+206 12031       #  dito även till 120
+207 10468       # x3 till MR
+208 11463       # x3y3 till AR
+209 12030       # x1y1+x2y2+x3y3 till AR
+20A 12031       #  dito även till 120
+20B 00000
+
+# x1
+100 00000
+101 00001
+
+# x2
+102 00000
+103 00002
+
+# x3
+104 00000
+105 00003
+
+# y1
+110 00000
+111 00001
+
+# y2
+112 00000
+113 00002
+
+# y3
+114 00000
+115 00003
+
+# result x1y1 + x2y2 + x3y3
+120 00000
+121 00000

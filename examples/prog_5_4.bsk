@@ -1,0 +1,31 @@
+# Exempel 5.4: x, y, z är lagrade i hac100, 101, 102.
+# Lagra teckensiffran och de 12 första binära siffrorna av
+# vardera x, y, och z is positionerna 1-13, 14-26, 27-39 resp
+# i 1FE, I pos. 0 skall teckensiffranför x stå
+#
+
+# input x, y, z
+100 11100   # 
+101 44400   # 
+102 22200   # 
+
+#         -|-----X--------||-----Y--------||-----Z--------|
+# result  1100 0100 0100 0110 1000 1000 1001 0010 0010 0010
+#          C    4    4    6    8    8    9    2    2    2
+1FE 00000
+1FF 00000
+
+200 10050
+201 01B04	# skifta 27 steg höger
+202 01A05       # skifta 26 steg hänster
+203 1FE31
+204 10150
+205 00744       # skift 7 steg höger
+206 00D05       # skifta 13 steg vänster
+207 1FE30
+208 1FE31
+209 10250
+20A 01B44       # skifta 27 steg höger utan tecken
+20B 1FE30
+20C 1FE31
+

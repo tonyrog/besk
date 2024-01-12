@@ -1,0 +1,23 @@
+# example 4.7 - x och y är lagrade i 100, 102.
+# sätt tecken och de 39 första siffrorna av xy i 180,
+# de 39 sista siffrorna i 182 med nolla i pos. 0.
+008 10068	# x till MR
+009 10262	# xy till AR, avrundat
+00A 18031	#
+00B 00001
+00C 18231
+
+# x
+100 00000
+101 00001
+
+# y
+102 00000
+103 00002
+
+# result
+180 00000
+181 00000
+# result 2
+182 00000
+183 00000

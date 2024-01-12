@@ -1,0 +1,17 @@
+# Exempel 6.6: Låt innehållet i kanalerna 008 och 012 byta plats på trumman.
+# Två kanalers utrymme får användas och förstöras i kärnminnet men ingen ytter-
+# liggare kanal på trumman
+100 10948       # läs kanalnummer 08 från 109 till MR
+101 2003B       # läs kanaldata till 200 
+102 10B48       # läs kanalnummer 12 från 10B till MR
+103 2403B       # läs kanaldata till 240
+104 2003F       # observera att trumkanalnumret ligger kvar i MR efter
+105 10948	# läsning och skrivning
+106 2403F
+107 0072C       # stop
+# kanel = 08
+108 00000
+109 00800
+# kanel = 12
+10A 00000
+10B 01200

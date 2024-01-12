@@ -1,0 +1,17 @@
+# example 4.6 - x, y är lagrade i 100, 102. Sätt -xy i 180 med tecken
+# och 39 korrekt avrundade binära siffror.
+008 10069	# -x till MR
+009 10263	# -xy till AR, avrundat
+00A 18031	# -xy även till hec180
+
+# x
+100 00000
+101 00001
+
+# y
+102 00000
+103 00002
+
+# result
+180 00000
+181 00000

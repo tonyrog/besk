@@ -1,0 +1,51 @@
+# -*- asm -*-
+# kommandorad -Ss -a 0x101 
+#
+  .org 0x100
+#adress  order  kommentar
+#------  -----  ---------
+limit: 0x01100    # 100  0x01100  # gräns lim=17
+start:
+  stora.z [n]	  # 101  11A47  # sätt n = 0 (start)
+next_a:
+  read4x1 [a]     # 102  11C39  # läs in a från remsa
+  load.h  [0x004] # 103  00470  # x = -1 + 2^-39
+  store.h [x]     # 104  11E31  # dito till W(x)
+next:
+  addmr.hz [x]    # 105  11E68  # x till MR
+  f x             # 106  00018  # x till F skriv ej
+  mulr.zh [x]     # 107  11E63  # x^2 i AR
+  addmr   [0x004] # 108  00408  # x^2 -1 i MR
+  mulr.zh [a]     # 109  11C63  # y = a(x^2 - 1) i AR
+  f yd            # 10A  00C18  # y till F, skriv
+  load.h  [dx]    # 10B  11870  # delta x i AR
+  addst.h [x]     # 10C  11E26  # nytt x, x += dx
+  jc new          # 10D  10F0A  # är x > +1?
+  jmp next        # 10E  1050C  # annars räkna ny punkt
+new:
+   neg.h [0x004]  # 10F  0046B  # x = +1 - 2^-39
+   f x            # 110  00018  # skriv
+   f.z yd         # 111  00C58  # separat y=0!
+   load.h [0x103] # 112  10370  # stopp
+   incst  [n]     # 113  11A46  # öka n med 2
+   sub    [limit] # 114  1000B  # n - gräns
+   jlt    next_a  # 115  1024E  # nytt a, om n < 11
+   jmp.h  start   # 116  1012C  # annars slut-STOPP
+end:
+   0x00000        #117  00000  # används ej
+
+# dx = 118 (constant)
+dx: 00800
+    00000
+
+# n = 11A
+n: 00000
+   00000
+
+# a = 11C
+a: 00000
+   00000
+
+# x = 11E
+x: 00000
+   00000

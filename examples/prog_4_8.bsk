@@ -1,0 +1,23 @@
+# example 4.8 - x, y, z är lagrade i 100, 102, 104.
+# lagra xyz i 106. Avrundade multiplikationens noggranget är tillräckligt
+008 10068	# x till MR
+009 10263	# xy till AR, avrundat
+00A 00608	#
+00B 10463       #
+00C 10631       #
+
+# x
+100 00000
+101 00001
+
+# y
+102 00000
+103 00002
+
+# z
+104 00000
+105 00003
+
+# result x*y*z
+106 00000
+107 00000

@@ -1,0 +1,12 @@
+008 10050
+009 00104	# skifta 1 steg höger
+00A 00104	# skifta 1 steg höger
+00B 00104	# skifta 1 steg höger
+00C 00104	# skifta 1 steg höger
+00D 00104	# skifta 1 steg höger
+00E 00105	# skifta 1 steg vänster
+00F 00105	# skifta 1 steg vänster
+010 00105	# skifta 1 steg vänster
+011 00105	# skifta 1 steg vänster
+
+100 80111   # 1000 0000 0001 0001 0001

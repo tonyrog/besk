@@ -1,0 +1,61 @@
+# draw "HELLORLD"
+
+  .org 100
+  00000          # not used yet (loop is odd address)
+loop:       
+  load.h  [004]  # 101 00470  #  x = -1 + 2^-39
+  store.h [y]    # 102 12031  # write y
+  store.h [x]    # 103 11E31  # write x
+  load.h  [H]    # 104 24070  # load 'H' into AR
+  store.h [char] # 105 12231  # store H in char
+  jlt draw       # 106 1084E  # jump and draw a one
+  load.h  [dx]   # 107 11870  # delta x i AR
+draw:
+  addst.h [x]    # 108 11E26  # nytt x
+  jmp.h loop     # 109 1012C  # annars slut-STOPP
+  00000          # 10A används ej
+
+# x - current x position 
+  .org 11E
+x:  00000
+    00000
+
+# y - current y position
+  .org 120
+y: 00000
+   00000
+
+
+# delta x step in x direction
+  .org 118
+dx: 00800
+    00000
+
+dy: 00800
+    00000
+
+# current char
+  .org 122
+char:
+   00000
+   00000
+
+  .org 200
+# letter 68 [D]
+D: F4631
+   8C7C0
+# letter 69 [E]
+E: FC21E
+   843E0
+# letter 72 [H]
+H: 8C63F
+   8C620
+# letter 76 [L]
+L: 84210
+   843E0
+# letter 79 [O]
+O: 74631
+   8C5C0
+# letter 82 [R]
+R: F463E
+   A4A20

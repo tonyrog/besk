@@ -1,0 +1,14 @@
+Messurements
+
+Width 800mm
+Hight 500mm
+
+400mm (4-group 58mm)
+          53   118  197  262  327       415
+| MD O    oooo oooo oooo oooo oooo      oooo oooo oooo oooo oooo   O MD |
+| MR O    oooo oooo oooo oooo oooo      oooo oooo oooo oooo oooo   O MR |
+| AR O  o oooo oooo oooo oooo oooo      oooo oooo oooo oooo oooo o O AR |
+|       O OOOO OOOO OOOO OOOO OOOO      OOOO OOOO OOOO OOOO OOOO O      |
+| AS O    oooo oooo oooo oooo oooo O OP oooo oooo oooo               KR |
+|         OOOO OOOO OOOO OOOO OOOO      OOOO OOOO OOOO  ooo oooo        |
+|                                              oo oooo OBROOOO

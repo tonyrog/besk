@@ -1,0 +1,102 @@
+# "All" instructions for test
+
+  .org 100
+
+start:
+ band [246]
+ movmr [0x246]
+ mul [246]
+ mulr [246]
+ shr  10
+ ashr 10
+ shl40 10
+ shl 10
+ incst [246]
+ incst.h [246]
+ addst [246]
+ addst.h [246]
+ addst.z [246]
+ addst.hz [246]
+ stora [246]
+ stora.h [0x246]
+ stora.z [246]
+ stora.hz [246]
+
+ addmr [246]
+ addmr.h [246]
+ addmr.z [246]
+ addmr.hz [246]
+
+ submr [246]
+ submr.h [246]
+ submr.z [246]
+ submr.hz [246]
+
+ neg [246]          # = sub.z
+ neg.h [246]        # = sub.zh
+
+ sub   [246]
+ sub.h [246]
+# sub.z [246]
+# sub.zh [246] 
+
+ aadd [246]
+ aadd.h [246]
+ aadd.z [246]
+ aadd.hz [246]
+
+ asub [246]
+ asub.h [246]
+ asub.z [246]
+ asub.zh [246] 
+
+ load [246]
+ load.h [246]
+
+ add [246]
+ add.h [246]
+ add.z [246]
+ add.hz [246]
+
+ store [246]
+ store.h [246]
+ store.z [246]
+ store.hz [246]
+ 
+ div [246]
+
+ rev
+ read5 [246]
+ norm40
+ norm
+
+ read4x1 [246]
+ read4x10 [246]
+ rd [246]
+ write4
+ write
+ wd [246]
+
+ f x
+ f xc
+ f xd
+ f.y
+ f.yc
+ f.yd
+
+ jc end
+ jc.h end
+ jmp end
+ jmp.h end
+ jlt end
+ jlt.h end
+ jge end
+ jge.h end
+end:
+ 00000
+
+# memory cell
+  .org 246
+cell:
+  00000
+  00000
