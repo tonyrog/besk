@@ -51,8 +51,11 @@ LOCAL inline int64_t helord_sign_extend(helord_t x) LOCAL_API;
 LOCAL inline helord_t helord_neg(helord_t a) LOCAL_API;
 LOCAL inline helord_t helord_abs(helord_t a) LOCAL_API;
 LOCAL inline helord_t helord_shl(helord_t a, unsigned s) LOCAL_API;
+LOCAL inline helord_t helord_shl00(helord_t a, unsigned s, uint8_t* ar00) LOCAL_API;
 LOCAL inline helord_t helord_shr(helord_t a, unsigned s) LOCAL_API;
+LOCAL inline helord_t helord_shr40(helord_t a, unsigned s, uint8_t* ar40) LOCAL_API;
 LOCAL inline helord_t helord_ashr(helord_t a, unsigned s) LOCAL_API;
+LOCAL inline helord_t helord_ashr40(helord_t a, unsigned s, uint8_t* ar40) LOCAL_API;
 LOCAL inline int helord_add(helord_t a, helord_t b, helord_t* rp) LOCAL_API;
 LOCAL inline int helord_add_oflw(helord_t a, helord_t b, helord_t* rp) LOCAL_API; 
 LOCAL inline helord_t helord_mul(helord_t a, helord_t b, helord_t* lwp) LOCAL_API;
@@ -126,16 +129,42 @@ static inline helord_t helord_shl(helord_t a, unsigned s)
     return (a << s) & HELORD_MASK;
 }
 
+static inline helord_t helord_shl00(helord_t a, unsigned s, uint8_t* ar00)
+{
+    assert(is_helord(a));
+    a = a << s;
+    *ar00 = (a >> 40) & 1;
+    return a & HELORD_MASK;
+}
+
 static inline helord_t helord_shr(helord_t a, unsigned s)
 {
     return (a >> s);
 }
 
+static inline helord_t helord_shr40(helord_t a, unsigned s, uint8_t* ar40)
+{
+    assert(is_helord(a));
+    *ar40 = (s < 40) ? ((a >> (s-1)) & 1) : 0;
+    a = a >> s;
+    return a & HELORD_MASK;
+}
+
+// arittmetic shift right, keep signbit intact
 static inline helord_t helord_ashr(helord_t a, unsigned s)
 {
     assert(is_helord(a));
     return ((a << 24) >> (24+s)) & HELORD_MASK;
 }
+
+// arittmetic shift right, keep signbit intact
+static inline helord_t helord_ashr40(helord_t a, unsigned s, uint8_t* ar40)
+{
+    assert(is_helord(a));
+    *ar40 = (s < 40) ? ((a >> (s-1)) & 1) : ((a >> 39) & 1);
+    return ((a << 24) >> (24+s)) & HELORD_MASK;
+}
+
 
 // add and return carry out
 static inline int helord_add(helord_t a, helord_t b, helord_t* rp)

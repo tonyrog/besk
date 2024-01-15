@@ -973,31 +973,32 @@ void besk_step(besk_t* state)
 	break;
     }
 	
-    case OP_ASHR: // 0x04 | 0x44 OP_SHR
-	if (AS <= 0x3F) {
-	    if (Z(INS)) // 0x44 MUST use copy of AR  (since AR=0)
-		AR = helord_shr(ARP, AS);
+    case OP_ASHR: { // 0x04 | 0x44 OP_SHR
+	int k = AS & 0x3F;
+	if (k > 0) {  // k=0 == NOP!
+	    if (Z(INS)) // 0x44 undoes zeroing of AR using ARP
+		AR = helord_shr40(ARP, AS, &AR40);
 	    else
-		AR = helord_ashr(AR, AS);
+		AR = helord_ashr40(AR, AS, &AR40);
+	    SI = helord_sign_bit(AR) != AR00;
 	}
-	SI = 0;
 	break;
+    }
 
-    case OP_SHL:  // 0x05 | (0x45 OP_SHL40) Shift bits left (with AR40)
-	if (AS <= 0x3F) {
-	    int k = AS;
-	    if (Z(INS)) { // 45 MUST use copy of AR  (since AR=0)
-		if (k >= 1) {
-		    AR = helord_shl(ARP,1) | AR40;
-		    k--;
-		    AR40 = 0;
-		}
+    case OP_SHL: { // 0x05 | (0x45 OP_SHL40) Shift bits left (with AR40)
+	int k = AS & 0x3F;
+	if (k > 0) {  // k=0 == NOP!
+	    if (Z(INS)) { // 45 undoes zeroing of AR using ARP
+		AR = helord_shl00(ARP,1,&AR00) | AR40;
+		k--;
+		AR40 = 0;
 	    }
 	    if (k > 0)
-		AR = helord_shl(AR, k);
+		AR = helord_shl00(AR, k, &AR00);
+	    SI = helord_sign_bit(AR) != AR00;
 	}
-	SI = 0;
 	break;
+    }
 
     case OP_ADDST:  // 0x06|0x26|0x46 OP_INCST (FIXME: write before STOP?)
 	MD = ord_read(H(INS), AS, state->MEM);
@@ -1060,7 +1061,7 @@ void besk_step(besk_t* state)
 
     case OP_JGE:  // 0x0E | 0x4E, JGE | JLT AS
 	if (Z(INS)) {
-	    AR = ARP;
+	    AR = ARP; // undo zeroing of AR
 	    if (AR < 0) {
 		KR = AS;
 		goto swapout;
@@ -1081,7 +1082,7 @@ void besk_step(besk_t* state)
 	// SI = AR00 != helord_sign_bit(AR);	
 	break;	
 
-    case OP_ADD:  // 0x10, AR += [AS]
+    case OP_ADD:  // 0x10, AR += [AS], OP_LOAD = OP_ADD+ARZERO_BIT
 	MD = ord_read(H(INS), AS, state->MEM);
 	if (state->trace) trace_read(stdout, INS, MD);
 	SI = helord_add_oflw(MD, AR, &AR);
@@ -1118,7 +1119,7 @@ void besk_step(besk_t* state)
 	
     case OP_NORM:  // NORM|NORM40 0x15|0x35  Normalize AR 
 	if (Z(INS)) {
-	    AR = ARP;  // restore (FIXME)
+	    AR = ARP;  // undo zeroing of AR
 	}
     next:
 	if (AR != 0) {

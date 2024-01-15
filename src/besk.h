@@ -116,6 +116,7 @@ typedef struct
 #define OP_UNDEF1E 0x1E
 #define OP_WD      0x1F
 
+
 // drum memory size = 256 * 32 * 5 = 40960 bytes
 #define DRUM_CHANNEL_SIZE  0x40  // 64 halfwords per channel
 #define DRUM_CHANNEL_BYTES ((DRUM_CHANNEL_SIZE/2)*5)  // 32*5 = 160 bytes per channel

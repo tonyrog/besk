@@ -8,7 +8,6 @@
 #include <poll.h>
 #include <sys/time.h>
 
-
 #include "epx.h"
 
 #include "besk.h"
@@ -33,6 +32,13 @@ typedef struct {
     epx_pixmap_t* led_on;
     epx_pixmap_t* knob;
 
+    // keyboard font
+    epx_font_t* font;
+    int key_width[16];
+    int key_height[16];
+    int key_max_width;
+    int key_max_height;
+
     // function display
     epx_gc_t*      fgc;    
 
@@ -47,6 +53,7 @@ typedef struct {
     uint64_t led_last;  // led last update
 } besk_sim_t;
 
+#define FONT "arialb20.efnt"
 
 #define WINDOW_WIDTH         1280
 #define WINDOW_HEIGHT        811
@@ -735,10 +742,96 @@ static void draw_sedecimal_state(besk_sim_t* bst, besk_t* st)
 	draw_sedecimal(bst, sed_kr_x_coords[2-i], XSED_KR_Y, (st->KR >> 4*i));
 }
 
+void draw_text_area(epx_gc_t* gc, epx_pixmap_t* dst, int* xp, int* yp,
+		    char* text)
+{
+    int x = *xp;
+    int y = *yp;
+    int x0 = x;
+    int x1 = x;
+
+    y += gc->font->font_info.ascent;
+    while(*text) {
+	if (*text == '\n') {
+	    y += (gc->font->font_info.ascent + gc->font->font_info.descent);
+	    if (x > x1) x1 = x;
+	    x = x0;
+	    text++;
+	}
+	else {
+	    epx_font_draw_glyph(gc, dst, &x, &y, *text);
+	    text++;
+	}
+    }
+    *xp = (x > x1) ? x : x1;
+    *yp = y + gc->font->font_info.descent;
+}
+
+static void draw_xkey(besk_sim_t* bst, epx_rect_t* area, int i)
+{
+    int x = area->xy.x;
+    int y = area->xy.y;
+    epx_pixel_t key_bg_color = epx_pixel_black;
+    int w = bst->key_width[i];
+
+    epx_gc_set_fill_style(bst->gc, EPX_FILL_STYLE_SOLID);
+    epx_gc_set_fill_color(bst->gc, key_bg_color);
+
+    epx_pixmap_draw_roundrect(bst->px, bst->gc,
+			      x, y, area->wh.width, area->wh.height,
+			      5, 5);
+    x += (area->wh.width - w)/2;
+    y += bst->gc->font->font_info.ascent;
+    epx_font_draw_glyph(bst->gc, bst->px, &x, &y, xdigit[i]);
+}
+
+static void draw_keyboard(besk_sim_t* bst)
+{
+    epx_pixel_t key_font_color = epx_pixel_white;
+    epx_pixel_t keyboard_color = epx_pixel_green;
+    epx_rect_t key_rect;
+    int i, x, y, w, h;
+
+    x = 530-10;
+    y = 755;
+    w = 340+20; // bst->key_max_height+2+(bst->key_max_width + 6)*8;
+    h = 60;
+
+    epx_gc_set_fill_style(bst->gc, EPX_FILL_STYLE_SOLID);
+    epx_gc_set_fill_color(bst->gc, keyboard_color);
+    epx_gc_set_border_color(bst->gc, epx_pixel_black);
+    epx_gc_set_border_width(bst->gc, 2);
+
+    epx_pixmap_draw_roundrect(bst->px, bst->gc, x, y, w, h, 8, 8);
+    
+    epx_gc_set_font(bst->gc, bst->font);
+    key_font_color.a = 0;        
+    epx_gc_set_foreground_color(bst->gc, key_font_color);
+
+    key_rect.wh.width  = bst->key_max_width + 4;
+    key_rect.wh.height = bst->key_max_height + 4;
+    key_rect.xy.x      = 600;
+    key_rect.xy.y      = 755+4;
+    // draw first row
+    for (i = 0; i <= 7; i++) {
+	draw_xkey(bst, &key_rect, i);
+	key_rect.xy.x += (key_rect.wh.width+2);
+    }
+    // draw second row
+    key_rect.xy.x      = 600+bst->key_max_width/2;
+    key_rect.xy.y      = 755+4+bst->key_max_height+2;
+    for (i = 8; i <= 15; i++) {
+	draw_xkey(bst, &key_rect, i);
+	key_rect.xy.x += (key_rect.wh.width+4);
+    }
+}
+
+
 static void draw_state(besk_sim_t* bst, besk_t* st)
 {
     draw_led_state(bst, st);
     draw_sedecimal_state(bst, st);
+    draw_keyboard(bst);
 }
 
 static void draw_panel(besk_sim_t* bst, besk_t* st, int active)
@@ -755,6 +848,7 @@ static void draw_panel(besk_sim_t* bst, besk_t* st, int active)
     else
 	draw_led_state(bst, st);
     draw_knobs(bst, st);
+    draw_keyboard(bst);
 }
 
 static void draw_function_grid(besk_sim_t* bst, besk_t* st)
@@ -938,6 +1032,27 @@ int backend_info_get_bool(epx_backend_t* be, char* key)
     return value;
 }
 
+void init_key_dim(besk_sim_t* bst)
+{
+    int x, y, w, h;
+    int i;
+    
+    epx_gc_set_font(bst->gc, bst->font);
+    h = bst->font->font_info.ascent + bst->font->font_info.descent;
+    bst->key_max_width = 0;
+    bst->key_max_height = h;
+    
+    for (i = 0; i < 16; i++) {
+	char c = xdigit[i];
+	x = y = 0;
+	epx_font_draw_glyph(bst->gc, NULL, &x, &y, c);
+	w = x;
+	bst->key_width[i] = w;
+	bst->key_height[i] = h;
+	if (w > bst->key_max_width)
+	    bst->key_max_width = w;
+    }
+}
 
 void simulator_init(int argc, char** argv, besk_t* st)
 {
@@ -984,6 +1099,19 @@ void simulator_init(int argc, char** argv, besk_t* st)
 			      EPX_EVENT_BUTTON_RELEASE |
 			      EPX_EVENT_KEY_PRESS |
 			      EPX_EVENT_CLOSE);
+
+    if (!(bst->font = epx_font_open(FONT_DIR FONT))) {
+	fprintf(stderr, "besk_sim: font file %s not found\n",
+		FONT_DIR FONT);
+	exit(1);
+    }
+    if (epx_font_load(bst->font) < 0) {
+	fprintf(stderr, "besk_sim: unable to load font %s\n",
+		FONT_DIR FONT);
+	exit(1);
+    }
+    init_key_dim(bst);
+
     
     load_sedecimal(bst);
     

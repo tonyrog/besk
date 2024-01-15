@@ -78,6 +78,8 @@ lodepng.o: lodepng.cpp
 epx_lode_png.o: $(EPX_DIR)/c_src/epx_lode_png.c
 	$(CC) -c -o $@ $(CFLAGS) $<
 
+besk_sim.o: CFLAGS += -DFONT_DIR=\"$(HOME)/erlang/epx/priv/fonts/\"
+
 %.o:	%.c
 	$(CC) -c -o $@ -MMD -MF .$<.d $(CFLAGS) $<
 
