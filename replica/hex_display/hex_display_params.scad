@@ -7,7 +7,7 @@ glass_width     = 56.0;
 glass_thickness = 2.0;
 led_base_width  = 2.55;
 led_base_height = 4.9;
-led_base_depth  = 3.5;
+led_base_depth  = 4.9;
 led_top_radius  = (1.99/2.0);
 led_top_height  = 4.3;
 
