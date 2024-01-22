@@ -5,6 +5,12 @@ $fn = 75;
 
 include <hex_display_params.scad>
 
+echo(version=version());
+echo(block_side=block_side);
+echo(block_depth=block_depth);
+echo(glass_slit_width=glass_slit_width);
+echo(glass_slit_height=glass_slit_height);
+
 module Led1(extra_base_depth=0)
 {
     union() {
@@ -54,17 +60,17 @@ module Object()
 aside = block_border/4;
 adepth = block_depth-10;
 
-if (true) {
+if (false) {
     union() {
 	intersection() {
 	    Object();
         translate([-block_side/2,0,0])
-		cube([block_depth,block_side,block_side],center=true);
+	    cube([block_side,block_side,block_depth],center=true);
 	}
-	translate([aside/2-0.6,-screw_hole_inset,-adepth/2])	
-	    cube([aside, aside, adepth],center=false);
-	translate([aside/2-0.6,screw_hole_inset,-adepth/2])	
-	    cube([aside, aside, adepth],center=false);	    
+	translate([aside/2-0.6,-screw_hole_inset,0])	
+	    cube([aside, aside, adepth],center=true);
+	translate([aside/2-0.6, screw_hole_inset,0])	
+	    cube([aside, aside, adepth],center=true);	    
     }
 }
 else {
@@ -72,11 +78,11 @@ else {
 	intersection() {
 	    Object();
         translate([block_side/2,0,0])
-		cube([block_depth,block_side,block_side],center=true);
+	    cube([block_side,block_side,block_depth],center=true);
 	}
-	translate([-aside/2-0.5,-screw_hole_inset, -adepth/2])
-	    cube([aside, aside, adepth],center=false);
-	translate([-aside/2-0.5,screw_hole_inset, -adepth/2])
-	    cube([aside, aside, adepth],center=false);	    
+	translate([aside/2-0.5,-screw_hole_inset,0])
+	    cube([aside, aside, adepth],center=true);
+	translate([aside/2-0.5,screw_hole_inset,0])
+	    cube([aside, aside, adepth],center=true);	    
     }
 }
