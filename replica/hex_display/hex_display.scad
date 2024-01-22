@@ -33,7 +33,7 @@ module Object()
 		    cube([glass_slit_width,glass_slit_height,glass_slit_thickness],center=true);
 		    rotate([0,270,0])
 			translate([0,0,-glass_slit_width/2-led_top_height-glass_slit_margin+0.1])
-			Led1(extra_base_depth=block_border-led_top_height-led_base_height-glass_slit_margin+0.5);
+			Led1(extra_base_depth=block_border-led_top_height-led_base_height-glass_slit_margin+1.0);
 		}
 	    }
 	    for (i=[0:7]) {
@@ -42,17 +42,17 @@ module Object()
 		    cube([glass_slit_width,glass_slit_height,glass_slit_thickness],center=true);
 		    rotate([0,270,0])
 			translate([0,0,-glass_slit_width/2-led_top_height-glass_slit_margin+0.1])
-			Led1(extra_base_depth=block_border-led_top_height-led_base_height-glass_slit_margin+0.5);
+			Led1(extra_base_depth=block_border-led_top_height-led_base_height-glass_slit_margin+1.0);
 		}
 	    }
 	    translate([-screw_hole_inset,-screw_hole_inset,0])
-		cylinder(r=screw_hole_r,h=block_depth+1.0,center=true);
+		cylinder(d=screw_hole_d,h=block_depth+1.0,center=true);
 	    translate([screw_hole_inset,-screw_hole_inset,0])
-		cylinder(r=screw_hole_r,h=block_depth+1.0,center=true);
+		cylinder(d=screw_hole_d,h=block_depth+1.0,center=true);
 	    translate([-screw_hole_inset,screw_hole_inset,0])
-		cylinder(r=screw_hole_r,h=block_depth+1.0,center=true);
+		cylinder(d=screw_hole_d,h=block_depth+1.0,center=true);
 	    translate([screw_hole_inset,screw_hole_inset,0])
-		cylinder(r=screw_hole_r,h=block_depth+1.0,center=true);	
+		cylinder(d=screw_hole_d,h=block_depth+1.0,center=true);	
 	}
     }
 }
