@@ -79,11 +79,11 @@ int ARh_pwr_pin[5] = { ARh1_pwr, ARh2_pwr, ARh3_pwr, ARh4_pwr, ARh5_pwr};
 int AS_pwr_pin[5]  = { AS1_pwr, AS2_pwr, AS3_pwr, OP1_pwr, OP2_pwr};
 int KR_pwr_pin[5]  = { KR1_pwr, KR2_pwr, KR3_pwr, 0, 0};
 
-uint32_t ARl = 0xAAA;
-uint32_t ARh = 0x555;
-uint16_t AS = 0x123;   // 12 bit value
-uint8_t OP  = 0x2A;    // 8 bit value
-uint16_t KR = 0x120;   // 12 bit value
+uint32_t ARl = 0x00000; // 20 bit value
+uint32_t ARh = 0x00000; // 20 bit value
+uint16_t AS  = 0x123;   // 12 bit value
+uint8_t  OP  = 0x2A;    // 8 bit value
+uint16_t KR  = 0x120;   // 12 bit value
 
 /*
 bus_t bus[] = {
@@ -259,13 +259,16 @@ void loop()
     state = !state;
     digitalWrite(13, state);  // turn off LED
 
+    // DEMO only
     ARl = (ARl+1) & 0xfffff;
-    if (!ARl)
-	ARh = (ARh+1) & 0xfffff;
-    delay(100);
+    if ((ARl & 0x0001F) == 0) {
+	// switch between two digit 1 and 2
+	ARh = (ARh < 2) ? 2 : 1;
+    }
     /*    
     AS = (AS+1) & 0x7ff;
     OP ^= 0x15;
     KR = (AS & 0x400) ? AS : KR+1;
     */
+    delay(100);
 }
